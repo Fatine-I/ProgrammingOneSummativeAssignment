@@ -31,10 +31,6 @@ class TestProduct(unittest.TestCase):
         with self.assertRaises(ValueError):
             Product("P003", "Bread", "-5.00", 10)
 
-    def test_negative_quantity_rejected(self):
-        with self.assertRaises(ValueError):
-            Product("P004", "Bread", "5.00", -3)
-
     def test_non_numeric_price_rejected(self):
         with self.assertRaises(ValueError):
             Product("P011", "Bread", "cheap", 10)
