@@ -26,7 +26,7 @@ class Product:
     @staticmethod
     def _validate_text(value, field_name):
         if value is None or str(value).strip()=="":
-            raise ValueError(f"{value} cannot be empty.")
+            raise ValueError(f"{field_name} cannot be empty.")
         return str(value).strip()
 
     @staticmethod
