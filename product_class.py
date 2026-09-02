@@ -13,7 +13,7 @@ class Product:
         self.supplier=supplier.strip() if supplier else ""
         self.price=self._validate_price(price)
         self.entry_date=(self._validate_date(entry_date) if entry_date else datetime.now().strftime(self.DATE_FORMAT))
-        Self.expiry_date=self._validate_date(expiry_date) if expiry_date else None
+        self.expiry_date=self._validate_date(expiry_date) if expiry_date else None
 
 
     @staticmethod
@@ -44,5 +44,5 @@ class Product:
         try:
             datetime.strptime(date_str, cls.DATE_FORMAT)
         except (ValueError, TypeError):
-            return ValueError(f"Date must be in {cls.DATE_FORMAT} format.")
+            raise ValueError(f"Date must be in {cls.DATE_FORMAT} format.")
         return date_str
