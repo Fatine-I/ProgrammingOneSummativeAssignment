@@ -19,7 +19,7 @@ class Inventory:
 
     def add_product(self):        
         pass 
-    def save_to_file(self)
+    def save_to_file(self):
         pass  
     def search_product(self):        
         pass   
