@@ -31,7 +31,18 @@ class Finance:
               "amount": str(sale_summary["total"]),
               "date": sale_summary["sale_date"],
               }
-        self.incoe_df= pd.concat([self.income_df, pd.DataFrame([row])], ignore_index= True)  #It adds the new income record to the existing income DataFrame
+        self.income_df= pd.concat([self.income_df, pd.DataFrame([row])], ignore_index= True)  #It adds the new income record to the existing income DataFrame
+
+    def process_payment(self,total, amount_received):
+        total = parse_money(total, "Total")
+        amount_received = parse_money(amount_received,"amount recieved")
+        if total <= 0:
+            raise ValueError("Total must be greater than zero.")
+        if amount_received < total :
+            ValueError(f"Insufficient payment. {total - amount_received:.2f} more is needed.")
+        self.amount_received = amount_received
+        self.change = amount_received - total
+        return self.change
 
 
 
