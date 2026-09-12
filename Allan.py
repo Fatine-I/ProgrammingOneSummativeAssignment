@@ -21,7 +21,7 @@ class Inventory:
 
         return self.products.get(str(product_id).strip())
 
-    def check_stock(self,product_id):
+    def check_stock(self,product_id, quantity):
         """ returns a product object"""
         product = self.find_product(product_id)
 
@@ -86,9 +86,9 @@ class Inventory:
 
         for product in self.products.values():
             if (
-                search_word in product.product_id.lower()
+                search_word in str(product.product_id).lower()
                 or search_word in product.product_name.lower()
-                or search_word in product.product.category.lower()
+                or search_word in product.category.lower()
                 or search_word in product.brand.lower()
             ):
                 matches.append(product)
