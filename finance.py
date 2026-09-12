@@ -1,5 +1,5 @@
 #invalid operation helps to catch invalid decimal conversions
-# I use decima for accurate money computation
+# I use decimal for accurate money computation
 from decimal import Decimal, InvalidOperation 
 
 import pandas as pd
@@ -7,13 +7,16 @@ import pandas as pd
 
 def parse_money(value, field_name="Amount"):
     """Read finite money with at mosttwo decimal places; never round input slightly."""
-    amount= Decimal(str(value).strip())                             #convert the value to text, remove extra spaces, then convert it to Decimal
-    if not amount.is_finite():                                      # reject special value such as infinity or NaN
-        raise ValueError(f"{field_name} must be a finite number.")
-    cents= amount.quantize(Decimal("0.01"))                         #Convert the monetary value to two decimal places
-    if amount != cents:                                             #Reject value that contain more than two decimal places
-        raise ValueError(f"{field_name} must have at most decimal places.")
-    return cents
+    try:
+        amount= Decimal(str(value).strip())                             #convert the value to text, remove extra spaces, then convert it to Decimal
+        if not amount.is_finite():                                      # reject special value such as infinity or NaN
+            raise ValueError(f"{field_name} must be a finite number.")
+        cents= amount.quantize(Decimal("0.01"))                         #Convert the monetary value to two decimal places
+        if amount != cents:                                             #Reject value that contain more than two decimal places
+            raise ValueError(f"{field_name} must have at most decimal places.")
+        return cents
+    except (InvalidOperation,TypeError) as error:
+        raise ValueError(f"{field_name} must be a valid monetary amount") from error
 
 
 
