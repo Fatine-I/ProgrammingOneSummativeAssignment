@@ -16,12 +16,12 @@ class Sales:
         current_sale = []
         
         while True:
-            product_id = input("Enter Product ID (or 'done' to finish): ")
-            if product_id.lower() == 'done':
+            productid = input("Enter Product ID (or 'done' to finish): ")
+            if productid.lower() == 'done':
                 break
                 
             # Ask Inventory if product exists
-            product = self.inventory.find_product(product_id)
+            product = self.inventory.find_product(productid)
             if not product:
                 console.print("[red]Product not found. Please try again.[/red]")
                 continue
@@ -36,13 +36,13 @@ class Sales:
                 continue
 
             # Ask Inventory if stock is sufficient
-            if not self.inventory.check_stock(product_id, quantity):
+            if not self.inventory.check_stock(productid, quantity):
                 console.print("[red]Insufficient stock available.[/red]")
                 continue
                 
             # Add valid item to cart
             current_sale.append({
-                "product_id": product_id,
+                "productid": productid,
                 "name": product.name,
                 "quantity": quantity,
                 "unit_price": product.price,
@@ -73,7 +73,7 @@ class Sales:
                 }
                 self.sales_history.append(record)
                 # Tell Inventory to reduce stock ONLY after success
-                self.inventory.reduce_stock(item["product_id"], item["quantity"])
+                self.inventory.reduce_stock(item["productid"], item["quantity"])
                 
             console.print(f"[green]Sale {sale_id} completed successfully![/green]")
         else:
