@@ -1,107 +1,129 @@
-
 import product_class as pc
 
 class Inventory:
    
     def __init__(self,low_stock_limit=5):
         self.products = {}
-        self.low_stock_limit = low_stock_limit  
+        self.low_stock_limit = pc.Product._validate_quantity(low_stock_limit) 
 
     def add_product(self,product):
         """ Adds one one product object to the inventory """
-
+        if not isinstance(product, pc.Product):
+            raise TypeError("Inventory can only store product objects.")
         if product.product_id in self.products:
-            raise ValueError(f"A product with id  {product.product_id} already exist")
-
+            raise ValueError(f"Product ID {product.product_id} already exists.")
         self.products[product.product_id] = product
-        return product
-
+        return product     
+    
     def find_product(self,product_id):
         """ return a product object if it exist or none if it not existing"""
+        return self.products.get(str(product_id).strip().upper())
 
-        return self.products.get(str(product_id).strip())
+    def get_all_products(self):
+        return sorted( self.products.values(), key= lambda product:product.product_id)
 
     def check_stock(self,product_id, quantity):
         """ returns a product object"""
         product = self.find_product(product_id)
-
         if product is None:
             return False
-
         try:
-            quantity = int(quantity)
+            quantity =pc.Product.validate_quantity(quantity)
         except (ValueError,TypeError):
             return False
-
         return quantity > 0 and product.quantity >= quantity
 
-    def reduce_stock(self,product_id,quantity_sold):  
-        product = self.find_product(product_id)
-
-        if product is None:
-            raise ValueError("product not found!")
-
-        if not self.check_stock(product_id,quantity_sold):
-            raise ValueError("Insufficient stock available")
-
-        product.quantity -=int(quantity_sold)
+    def reduce_stock(self,product_id,quantity):
+        product = self._require_product(product_id)
+        if not self.check_stock(product_id,quantity):
+            raise ValueError("insufficient stock available")
+        product.quantity -= pc.Product.validate_quantity(quantity)
+        return product
+       
+    def update_product(self,product_id, changes):
+        product = self._require_product(product_id)
+        allowed_fields = {
+            "product_name",
+            "price",
+            "category",
+            "brand",
+            "size",
+            "supplier",
+            "expiry_date",
+        }
+        unknown_fields = set(changes) - allowed_fields
+        if unknown_fields:
+            raise ValueError(f"cannot update: {', '.join(sorted(unknown_fields))}")
+        
+        values = {
+            "product_id": product.product_id,
+            "product_name": product.product_name,
+            "price": product.price,
+            "quantity": product.quantity,
+            "category": product.category,
+            "brand": product.brand,
+            "size": product.size,
+            "supplier": product.supplier,
+            "entry_date": product.entry_date,
+            "expiry_date": product.expiry_date,
+        }
+        values.update(changes)
+        update_product = pc.Product(**values)
+        self.products[product.product_id] = update_product
+        return update_product
 
     def update_quantity(self, product_id, new_quantity):
-        product = self.find_product(product_id)
-
-        if product is None:
-            raise ValueError("product not found!")
-
-        try:
-            new_quantity = int(new_quantity)
-
-        except (ValueError,TypeError):
-            raise ValueError("Quantity must be a whole number.")
-
-        if new_quantity < 0 :
-            raise ValueError("Quantity must be awhole number")
-
-        product.quantity = new_quantity
-
-    def get_low_stock_product(self):
+        product = self._require_product(product_id)
+        product.quantity = pc.Product.validate_quantity(new_quantity) 
+        return product
+  
+    def get_low_stock_products(self):
         return [
             product
-            for product in self.products.values()
+            for product in self.get_all_products()
             if product.quantity <= self.low_stock_limit
         ]
 
     def filter_by_category(self,category):
         category =str(category).strip().lower()
-
         return [
             product
-            for product in self.products.values()
+            for product in self.get_all_products()
             if product.category.lower() == category
         ]
 
     def search_products(self,search_word):
         search_word = str(search_word).strip().lower()
-
-        matches = []
-
+        if not search_word:
+            return []  
+              
+        matches = [] 
         for product in self.products.values():
-            if (
-                search_word in str(product.product_id).lower()
-                or search_word in product.product_name.lower()
-                or search_word in product.category.lower()
-                or search_word in product.brand.lower()
-            ):
-                matches.append(product)
-
-        return matches
+           searchable_values =(
+               product.product_id,
+               product.product_name,
+               product.category,
+               product.brand,
+               product.supplier
+           )
+           if any(search_word in value.lower() for value in searchable_values):
+               matches.append(product)
+        return sorted(matches, key = lambda product: product.product_id)
 
     def delete_product(self,product_id):
-        product_id = str(product_id).strip()
+        product = self._require_product(product_id)
+        del self.products[product.product_id]        
+        return product
 
-        if product_id not in self.products:
-            raise ValueError("product not found.")
+    def _require_product(self,product_id):
+        product = self.find_product(product_id)
+        if product is None:
+            raise ValueError( "Product not found")
+        return product
 
-        return self.products.pop(product_id)
+    def __len__(self):
+        return len(self.products)
+    
 
 
 
