@@ -46,15 +46,15 @@ class Filehandling:
     def load_sales(self):        
         dataframe = self._read_csv(self.income_file,Finance.COLUMNS)
 
-    def save_sales(self):
-        pass
+    def save_sales(self,sales_df):
+        self._write_dataframe(self.sales_file,sales_df, Sales.COLUMNS)
 
     def load_income(self):
         pass
 
 
-    def save_income(self):
-        pass
+    def save_income(self,income_df):
+        self._write_dataframe(self.income_file, income_df, Finance.COLUMNS)
 
     @staticmethod
     def _read_csv(filename, required_columns):
@@ -78,10 +78,13 @@ class Filehandling:
     @staticmethod
     def _write_dataframe( filename, dataframe, columns):
         temporary = filename + ".tmp"
-
-        with open(temporary, "w") as file :
-            dataframe[columns].to_csv(file, index=False)
-        os.replace(temporary,filename)
+        try:
+            with open(temporary, "w") as file :
+                dataframe[columns].to_csv(file, index=False)
+            os.replace(temporary,filename)
+        finally:
+            if os.path.exists(temporary):
+                os.remove(temporary)
 
 
 
