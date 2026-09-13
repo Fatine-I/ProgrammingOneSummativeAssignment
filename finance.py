@@ -21,6 +21,9 @@ def parse_money(value, field_name="Amount"):
 
 
 class Finance:
+
+    COLUMNS = ["sale_id", "amount", "date"]
+    
     def __init__(self, income_df=None):
         self.income_df= income_df if income_df is not None else pd.DataFrame(columns=self.COLUMNS)
         self.amount_received=Decimal("0")                          #It is used to store the amount received from the customer
