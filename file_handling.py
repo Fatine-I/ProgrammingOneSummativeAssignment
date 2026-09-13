@@ -59,9 +59,21 @@ class Filehandling:
     @staticmethod
     def _read_csv(filename, required_columns):
         name = os.path.basename(filename)
+        try:
+            with open(filename, "r", encoding="utf-8-sig", newline="") as file:
+                dataframe = pd.read_csv(file, dtype=str, keep_default_na=False) 
+        except FileNotFoundError:
+            return pd.DataFrame(columns=required_columns)
 
-        with open(filename, "r") as file:
-            dataframe = pd.read_csv(file, dtype=str, keep_default_na=False) 
+        except (pd.errors.EmptyDataError, pd.errors.ParserError, UnicodeError) as error:
+            raise ValueError(f" cannot read {name}. check its csv contents; it was not changed") from error
+        if set(dataframe.columns) != set(required_columns):
+            raise ValueError(f"{name} must contain exactly these columns: {', '.join(required_columns)}")
+        if not isinstance(dataframe.index, pd.RangeIndex) or dataframe.isna().any().any():
+            raise ValueError(f"{name} contains an incomplete or incorrectly sized row.")
+        return dataframe[required_columns]
+        
+
 
     @staticmethod
     def _write_dataframe( filename, dataframe, columns):
