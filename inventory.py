@@ -1,4 +1,4 @@
-import product as pc
+import product_class as pc
 
 class Inventory:
    

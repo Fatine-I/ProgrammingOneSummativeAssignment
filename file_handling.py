@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-from product import Product
+from product_class import Product
 from finance import Finance, parse_money
 from sales import Sales
 

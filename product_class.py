@@ -55,7 +55,7 @@ class Product:
     
     #A valid quantity of the product is a whole number
     @staticmethod
-    def validate_quantity(quantity):
+    def _validate_quantity(quantity):
         try:
             quantity = int(str(quantity).strip())
         except (TypeError, ValueError) as error:
