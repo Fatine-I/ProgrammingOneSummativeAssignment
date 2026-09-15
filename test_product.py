@@ -7,7 +7,7 @@ from product import Product
 #Checks that the shop's item records behave correctly, both for normal and problematic entries.
 class TestProduct(unittest.TestCase):
 
-    #A normal item, like a bottle of soda with a brand, should be rocrde correctly.
+    #A normal item, like a bottle of soda with a brand, should be recorded correctly.
     def test_valid_product_creation(self):
         p = Product("P001", "Coca-Cola 2L", "25.50", 100, brand="Coca-Cola")
         self.assertEqual(p.product_id, "P001")
@@ -27,7 +27,7 @@ class TestProduct(unittest.TestCase):
             Product("", "Bread", "5.00")
 
 
-    #Optional fiels being strings
+    #Optional files being strings
     def test_optional_fields_default_to_empty_string(self):
         p = Product("P030", "Chips", "1.50", 20)
         self.assertEqual(p.category, "")
