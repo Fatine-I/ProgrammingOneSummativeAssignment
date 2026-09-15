@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 from decimal import Decimal
-from sales import Sales
+from sales import Sales  # type: ignore[reportMissingImports]
 
 # We inject 'mocker' directly into our fixtures
 @pytest.fixture

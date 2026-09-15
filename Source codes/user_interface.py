@@ -2,7 +2,7 @@ from file_handling import FileHandling
 from finance import Finance
 from inventory import Inventory
 from product import Product
-from sales1 import Sales
+from sales import Sales
 
 from time import sleep
 
