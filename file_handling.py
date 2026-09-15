@@ -1,10 +1,13 @@
 import pandas as pd
 import os
+
+from product import Product
 from finance import Finance, parse_money
 from sales import Sales
 
 
-class Filehandling:
+
+class FileHandling:
     """ This class uses pandas to save and load the system's csv files"""
     PRODUCT_COLUMNS = [
         "product_id", "product_name", "category","brand",  "size", "supplier",
@@ -35,27 +38,57 @@ class Filehandling:
             pending.remove("income")
 
         
-
     def load_products(self):
-        pass
+        dataframe= self._read_csv(self.products_file, self.PRODUCT_COLUMNS)
+        products= {}
 
-    def save_products(self):
-        pass
+        for row_number, row in dataframe.iterrows():
+            try:
+                # cvs column names match the Product constructor's arguments.
+                product= Product(**row.to_dict())
+            except ValueError as error:
+                raise ValueError(f"Invalid product on cvs row {row_number + 2}: {error}") from error
+            if product.product_id in products:
+                raise ValueError(f" Duplicate product ID {product.product_id} in products.csv.")
+            products[product.product_id] = product
+        return products
+
+    
+    def save_products(self, products):
+        #Vars(product) gives a dictionary of its saved attributes.
+        rows=[vars(product) for product in products.values()]
+        dataframe= pd.DataFrame(rows, columns= self.PRODUCT_COLUMNS)
+        self._write_dataframe(self.products_file, dataframe, self.PRODUCT_COLUMNS)
 
 
     def load_sales(self):        
         dataframe = self._read_csv(self.sales_file, Sales.COLUMNS)
         for index, row in dataframe.iterrows():
             try:
-                pass
-            except
-
+                sale_id= Product.validate_quantity(row["sale_id"])
+                quantity= Product.validate_quantity(row["quantity"])
+                price= Product._validate_price(row["unit_price"])
+                subtotal= parse_money(row["subtotal"], "Subtotal")
+                if sale_id == 0 or quantity== 0 or subtotal != price* quantity:
+                    raise ValueError("Invalid sale ID, quantity, or subtotal.")
+            except ValueError as error:
+                raise ValueError(f"Invalid sales.csv row {index + 2}: {error}")
+        return dataframe
 
     def save_sales(self,sales_df):
         self._write_dataframe(self.sales_file, sales_df, Sales.COLUMNS)
 
     def load_income(self):
-        pass
+        dataframe= self._read_csv(self.income_file, Finance.COLUMNS)
+        for index, row in dataframe.iterrows():
+            try:
+                if Product.validate_quantity(row["sale_id"]) ==0:
+                    raise ValueError("Sale ID must be positive.")
+                if parse_money(row["amount"], "Income") <= 0:
+                    raise ValueError("Income must be positive.")
+            except ValueError as error:
+                raise ValueError(f"Invalid income.csv row {index +2}: {error}") from error
+        return dataframe
 
 
     def save_income(self,income_df):
