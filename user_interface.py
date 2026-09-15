@@ -53,6 +53,7 @@ class ShopApplication:
         except (OSError, ValueError, TypeError) as error:
             self.console.log(f" {error} cannot open shop app", style="bold yellow on red", markup=False)
             return
+        self.console.print(Panel("Welcome to My shop inventory & sales Tracker",style= ACCENT, border_style=PRIMARY, expand=False))
         while self._save_changes():
             self._show_menu()
             choice = self._ask("choose you menu option", choices= list(self.MENU))
