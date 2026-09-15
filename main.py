@@ -2,7 +2,7 @@ from user_interface import ShopApplication
 
 message ="App close safely"
 message2 = "Unsave changes remain. Please check Csv file before reopening "
-warning = "Bold yellow on red"
+warning = "bold yellow on red"
 
 
 def main():
