@@ -18,8 +18,8 @@ from rich.theme import Theme
 
 PRIMARY = "bold bright_blue"
 ACCENT = "bold #ff69b4"
-SUCCESS = "bold bright_green"
-WARNING = "bold yellow"
+SUCCESS = "bold green"
+WARNING = "bold yellow on red"
 ERROR = "bold red"
 
 sleep_amount = 0.5
