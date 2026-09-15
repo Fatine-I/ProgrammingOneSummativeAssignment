@@ -77,4 +77,5 @@ def test_add_item_insufficient_stock(sales_app, mock_inventory):
 def test_complete_empty_sale(sales_app):
     with pytest.raises(ValueError, match="There are no items in the current sale."):
         sales_app.complete_sale()
+        
 
