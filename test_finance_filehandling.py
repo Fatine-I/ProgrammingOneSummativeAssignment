@@ -1,5 +1,6 @@
 import unittest
 import tempfile
+import os
 from decimal import Decimal
 
 import pandas as pd
@@ -17,23 +18,43 @@ class TestFinance(unittest.TestCase):
         self.assertEqual(finance.amount_received, Decimal("150.00"))
         self.assertEqual(finance.change, Decimal("50.00"))
 
+    def test_exact_payment_returns_zero_change(self):         #It tests whether the customer pays the exact amount due
+        finance= Finance()
+        change= finance.process_payment("250.00", "250.00")
+
+        # Exact payment should succeed and there should be no change
+        self.assertEqual(change, Decimal("0.00"))
+        self.assertEqual(finance.amount_received, Decimal("250.00"))
+        self.assertEqual(finance.change, Decimal("0.00"))
+
+
     def test_insufficient_payment_raises_error(self):         #It checks whether finance rejects a payment that is below the amount to be paid
         finance= Finance()
         with self.assertRaises(ValueError):                   # if the payment is below it is rejected
             finance.process_payment("100.00", "60.00")
 
+    def test_money_with_more_than_two_decimal_places_raises_error(self):   #it test any invalid money format is rejected
+        finance= Finance()
+        with self.assertRaises(ValueError):                   # money format such as 10.157 should not be rounded
+            finance.process_payment("10.157", "435.00")
+
+    def test_invalid_test_money_raises_error(self):          #It tests that non numeric money input is rejected
+        finance= Finance()                                   # when the amount input is text instead of monetary value
+        with self.assertRaises(ValueError):               
+            finance.process_payment("350.50", "hello")
+
 
 class TestFileHandling(unittest.TestCase):
     def test_missing_products_file_returns_empty_dictionary(self):  # This method tests that a missing products file does not crash the system
-        with tempfile.TemporaryDirectory() as temp_directory:         #creating a temporary folder for the test CSV file
+        with tempfile.TemporaryDirectory() as temp_directory:       #creating a temporary folder for the test CSV file
             file_handler= FileHandling(temp_directory)
             file_handler.prepare_directory()
             products= file_handler.load_products()
-            self.assertEqual(products, {})            #It makes sure a new system with no products.csv is behaving like an empty inventory
+            self.assertEqual(products, {})                   #It makes sure a new system with no products.csv is behaving like an empty inventory
 
 
 
-    def test_save_and_load_income(self):      # this method tests that income data can be saved and loaded again correctly
+    def test_save_and_load_income(self):                     # this method tests that income data can be saved and loaded again correctly
             with tempfile.TemporaryDirectory() as temp_directory:    # it keeps test cvs files as separate from th real project data
                 file_handler= FileHandling(temp_directory)
                 file_handler.prepare_directory()
