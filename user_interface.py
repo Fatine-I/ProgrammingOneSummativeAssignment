@@ -22,6 +22,7 @@ SUCCESS = "bold bright_green"
 WARNING = "bold yellow"
 ERROR = "bold red"
 
+sleep_amount = 0.5
 
 class ShopApplication:
     MENU = {
@@ -69,11 +70,31 @@ class ShopApplication:
             self.console.print("No record found.", style=WARNING)
 
     def _start_application(self): # loads csvs into inventory ,sales and finance
-        
-        pass
-
+        self.files.prepare_directory()
+        loaders = [self.files.load_products, self.files.load_sales, self.files.load_income]
+        results = []
+        with Progress(console=self.console) as progress:
+            task = progress.add_task(f"[{ACCENT}]Opening shop system...", total=len(loaders))
+            for loader in loaders:
+                results.append(loader())
+                sleep(sleep_amount)
+                progress.advance(task)
+                progress.refresh
+            self.inventory.products = results[0]
+            self.sales = Sales(self.inventory, results[1])
+            self.finance = Finance(results[2])
+                  
     def _save_changes(self):
-        pass
+        while self.pending_save:
+            try:
+                self.files.save_changes(self.inventory, self.sales, self.finance, self.pending_save)
+            except OSError as error:
+                self.console.print(f"Save failed:{error}",style=ERROR, markup=False)
+                self.console.print("changes remain in memory, Fix file acces, then retry.", style=WARNING)
+                if self._ask("Retry saving?", choices=["yes", "no"], default="yes") == "no":
+                    self.console.print("Closed with unsaved changes. Check all three CSVs before reopening.", style= WARNING)
+                    return False
+        return True        
 
     def _show_menu(self): # shows the user MENU
         self.console.print(Panel(
@@ -85,10 +106,31 @@ class ShopApplication:
         self._table("Main Menu", ["Option", "Action"], rows, show_header=False)
 
     def _add_product(self):
-        pass
+        self.console.print(Panel("Add product", border_style=PRIMARY))
+        values = {"product_id": self._ask("Product ID")}
+        for field, label in self.FIELDS.items():
+            values[field] = self._ask(label)
+            if field == "price":
+                values["quantity"] = self._ask("quality")
+        self.inventory.add_product(Product(**values))
+        self.pending_save.add("products")
+        self.console.print("Product added.", style=SUCCESS)        
 
-    def _update_product(self):
-        pass
+    def _update_product(self, quantity_only=False):
+        product_id = self._ask("Product ID")
+        if self.inventory.find_product(product_id) is None:
+            raise ValueError(" Product not found")
+        if quantity_only:
+            self.inventory.update_product( product_id, self._ask("New quantity"))
+        else:
+            choices = dict(enumerate(self.FIELDS, start=1))
+            self._table("Field to update", ["Option", "Field"], enumerate(self.FIELDS.values(), start=1))
+            choice = self._ask("Field to update", choices=[str(number) for number in choices])
+            field = choices[int(choice)]
+            value = self._ask(f"New {self.FIELDS[field]}")
+            self.inventory.update_product(product_id, {field: value})
+            self.pending_save.add("products")
+            self.console.print("Product updated.", style=SUCCESS)
 
     def _print_products(self, products, title):
         rows = []
