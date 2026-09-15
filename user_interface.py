@@ -45,33 +45,70 @@ class ShopApplication:
 
 
     def run(self):
+        if self._ask("Types yes to open, or exit to close", choices=["yes","exit"]) == "exit":
+            return
+
+        
+
+    def _ask(self, label, **options):  # raw funtion that Propmts the user to return trimmed input.. to be use explitly in this codes
+        return Prompt.ask(f" [{PRIMARY}] {escape(label)} [/{PRIMARY}]", console= self.console, show_default=False,**options).strip()
+
+    def _table(self,title, headings, rows, show_header=True):
+        table = Table( title=title, title_style=ACCENT,box=box.ROUNDED,
+                      border_style=PRIMARY, header_style=PRIMARY, show_header=show_header)
+        for heading in headings:
+            table.add_column(heading)
+        for row in rows:
+            cells = []
+            for value in row:
+                cells.append(value if isinstance(value,Text) else Text(str(value)))
+            table.add_row(*cells)
+        if table.row_count:
+            self.console.print(table)
+        else:
+            self.console.print("No record found.", style=WARNING)
+
+    def _start_application(self): # loads csvs into inventory ,sales and finance
+        
         pass
 
-    def ask(self):
+    def _save_changes(self):
         pass
 
-    def table(self):
+    def _show_menu(self): # shows the user MENU
+        self.console.print(Panel(
+            f"[cyan]PRODUCT:[/] {len(self.inventory)}  "
+            f"[yellow]Low stock:[/] {len(self.inventory.get_low_stock_products())}",
+            title="shop Details", title_align="Left",border_style=PRIMARY, expand=False
+,        ))
+        rows = [(Text(key, style=PRIMARY), label) for key,label in self.MENU.item()]
+        self._table("Main Menu", ["Option", "Action"], rows, show_header=False)
+
+    def _add_product(self):
         pass
 
-    def start_application(self):
+    def _update_product(self):
         pass
 
-    def save_changes(self):
-        pass
-
-    def show_menu(self):
-        pass
-
-    def add_product(self):
-        pass
-
-    def update_product(self):
-        pass
-
-    def print_products(self):
-        pass
-
-    def record_sale(self):
+    def _print_products(self, products, title):
+        rows = []
+        for product in products:
+            status = Text("ok", style=SUCCESS)
+            if products.quantity <= self.inventory.low_stock_limit:
+                status =Text("LOW", style=WARNING)
+            if product.quantity == 0:
+                status = Text("OUT", style=ERROR)
+            rows.append((
+                product.product_id,
+                product.product_name,
+                product.category or "-",
+                product.brand or "-",
+                f"{product.price:.2f}",
+                product.quantity, status
+            ))
+        self._table(title, ["ID", "Product", "Category", "Brand", "Price", "Quantity", "Status"],rows)        
+                
+    def _record_sale(self):
         pass
 
         
