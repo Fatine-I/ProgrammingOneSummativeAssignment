@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pandas as pd
 
-from product_class import Product
+from product import Product
 
 
 class Sales:
