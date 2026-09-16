@@ -36,7 +36,7 @@ class TestProduct(unittest.TestCase):
     # A price input should still be recorded correctly.
     # Simulates input() always returning a string
     def test_price_accepts_string_number_from_user_input(self): 
-        p = Product("P010", "Water", "1.00")
+        p = Product("P010", "Water", "1.00", 10)
         self.assertEqual(p.price, Decimal("1.00"))
 
 
