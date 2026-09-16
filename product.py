@@ -12,10 +12,10 @@ class Product:
     def __init__(self, product_id, product_name, price, quantity, category="", brand="", size="", supplier="", entry_date=None, expiry_date=None):
         self.product_id=self._validate_id(product_id)
         self.product_name=self._validate_required_text(product_name, "Product name")
-        self.category=category._clean_optional_text(category)
-        self.brand=brand._clean_optional_text(category)
-        self.size=size._clean_optional_text(size)
-        self.supplier=supplier._clean_optional_text(supplier)
+        self.category=self._clean_optional_text(category)
+        self.brand=self._clean_optional_text(brand)
+        self.size=self._clean_optional_text(size)
+        self.supplier=self._clean_optional_text(supplier)
         self.price=self._validate_price(price)
         self.quantity=self._validate_quantity(quantity)
         self.entry_date=(self._validate_date(entry_date) if entry_date else datetime.now().strftime(self.DATE_FORMAT))
@@ -55,7 +55,7 @@ class Product:
     
     #A valid quantity of the product is a whole number
     @staticmethod
-    def validate_quantity(quantity):
+    def _validate_quantity(quantity):
         try:
             quantity = int(str(quantity).strip())
         except (TypeError, ValueError) as error:
@@ -71,5 +71,5 @@ class Product:
         try:
             datetime.strptime(date_string, cls.DATE_FORMAT)
         except (ValueError, TypeError):
-            raise ValueError(f"Date must be in {cls.DATE_FORMAT} format.")
+            raise ValueError("Date must be in DD/MM/YYYY format.")
         return date_string
