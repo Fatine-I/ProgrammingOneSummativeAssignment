@@ -16,22 +16,46 @@ The **Inventory & Sales Tracking System** is a Python-based application designed
 * **Data Persistence:** Automatically save and load all inventory and sales data so information is not lost when the application is closed.
 
 ## Classes Used
-* `Product`: Represents an individual item in the shop. It stores attributes such as the product ID, name, price, and current stock quantity.
-* `Inventory`: Manages the collection of `Product` objects. It contains methods for adding, removing, updating, and searching for items in the stock.
-* `SalesTracker`: Handles the checkout process. It records individual transactions, calculates total sales amounts, and updates the `Inventory` accordingly.
+* **Product (product.py):** Stores details for a single item (ID, name, price, quantity, category, brand, size, supplier, entry date, and expiry date) and checks that all inputs are valid.
 
+* **Inventory (inventory.py):** Manages the full product list. It allows adding, searching, updating, filtering, and removing products.
+
+* **Sales (sales.py):** Handles the customer shopping cart, verifies stock availability, calculates sales totals, and logs past transactions.
+
+* **Finance (finance.py):** Calculates exact money amounts, processes payments, calculates customer change, and logs overall income.
+
+* **FileHandling (file_handling.py):** Reads and writes CSV data files using pandas to keep data safe.
+
+* **ShopApplication (user_interface.py):** Controls the colorful user interface and displays menus and tables on screen.
+
+* **UserInformation (user_information.py):** Holds details about the shop, such as shop name, owner name, location, and phone number.
 ## Files Used
-* `inventory.csv` (or `.txt`): Used to permanently store the current stock data (item names, IDs, prices, and quantities). The program reads from this file on startup and writes to it whenever stock changes.
-* `sales_log.csv` (or `.txt`): Keeps a running historical record of all completed sales, including timestamps, items sold, and revenue generated.
+All shop data is stored inside CSV files in the data/ folder:
 
+`data/products.csv`: Stores the list of all products and their current quantities.
+
+`data/sales.csv`: Stores a log of all items sold in every sale transaction.
+
+`data/income.csv`: Stores the total money made from each completed sale along with the date and time.
 ## How to Run the Application
-1. Ensure you have Python installed on your system.
-2. Clone this repository to your local machine:
-   ```bash
-   git clone [https://github.com/oinusah/ProgrammingOneSummativeAssignment.git](https://github.com/oinusah/ProgrammingOneSummativeAssignment.git)
+1.Install Required Libraries:
 
+Open your terminal and install pandas and rich:
+
+``pip install pandas rich``
+
+
+2. Clone the Repository:
+
+git clone https://github.com/oinusah/ProgrammingOneSummativeAssignment.git
+cd ProgrammingOneSummativeAssignment
+
+3.**Start the Program:**
+Run the main.py file:
+
+  ``python main.py``
 ## Team Contributions
-* **Allan Ojuka:** Designed and implemented the main user interface (UI) and managed the inventory tracking logic.
+* **Allan Ojuka:** Inventory logic (inventory.py) and designed the user interface menu (user_interface.py).
 * **Debora Peter Hello:** Developed the finance module, handling revenue tracking, expense calculations, and financial reporting.
 * **Osman Inusah:** Built the sales processing system, including customer transactions, sales logging, and receipt generation.
 * **Fatine Icyimpaye:** Created the core `Product` class and managed product attributes, categorization, and item definitions.
