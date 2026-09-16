@@ -24,7 +24,7 @@ class TestProduct(unittest.TestCase):
     #The shop should refuse to add an item that has no id to identify it.
     def test_empty_id_rejected(self):
         with self.assertRaises(ValueError):
-            Product("", "Bread", "5.00")
+            Product("", "Bread", "5.00", 10)
 
 
     #Optional files being strings
@@ -49,13 +49,13 @@ class TestProduct(unittest.TestCase):
     #The shop should refuse to give an item a price below zero.
     def test_negative_price_rejected(self):
         with self.assertRaises(ValueError):
-            Product("P003", "Bread", "-5.00")
+            Product("P003", "Bread", "-5.00", 10)
 
 
     #The shop should refuse a price that isn't actually a number, like "cheap". 
     def test_non_numeric_price_rejected(self):
         with self.assertRaises(ValueError):
-            Product("P011", "Bread", "cheap")
+            Product("P011", "Bread", "cheap", 20)
 
 
     #The shop should refuse a negative quantity input.
