@@ -28,7 +28,7 @@ class Inventory:
         if product is None:
             return False
         try:
-            quantity =pc.Product.validate_quantity(quantity)
+            quantity =pc.Product._validate_quantity(quantity)
         except (ValueError,TypeError):
             return False
         return quantity > 0 and product.quantity >= quantity
@@ -37,7 +37,7 @@ class Inventory:
         product = self._require_product(product_id)
         if not self.check_stock(product_id,quantity):
             raise ValueError("insufficient stock available")
-        product.quantity -= pc.Product.validate_quantity(quantity)
+        product.quantity -= pc.Product._validate_quantity(quantity)
         return product
        
     def update_product(self,product_id, changes):
@@ -74,7 +74,7 @@ class Inventory:
 
     def update_quantity(self, product_id, new_quantity):
         product = self._require_product(product_id)
-        product.quantity = pc.Product.validate_quantity(new_quantity) 
+        product.quantity = pc.Product._validate_quantity(new_quantity) 
         return product
   
     def get_low_stock_products(self):
