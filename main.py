@@ -2,6 +2,7 @@ from user_interface import ShopApplication
 
 message ="App close safely"
 message2 = "Unsave changes remain. Please check Csv file before reopening "
+warning = "Bold yellow on red"
 
 
 def main():
@@ -9,7 +10,7 @@ def main():
     try:
         app.run()
     except (KeyboardInterrupt, EOFError):
-        app.console.log(message, style="Bold yellow on red",)
+        app.console.log(message, style=Warning,)
         if app.pending_save:
             app.console.log( message2, style="Bold yellow on red" )         
 
