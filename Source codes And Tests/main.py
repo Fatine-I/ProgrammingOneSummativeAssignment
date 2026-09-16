@@ -1,6 +1,6 @@
 from user_interface import ShopApplication
 
-message ="\nApp close safely"
+message ="App close safely"
 message2 = "Unsave changes remain. Please check Csv file before reopening "
 
 
