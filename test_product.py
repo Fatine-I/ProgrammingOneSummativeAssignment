@@ -43,7 +43,7 @@ class TestProduct(unittest.TestCase):
     #The shop should refuse to record an item with zero price.
     def test_zero_price_rejected(self):
         with self.assertRaises(ValueError):
-            Product("P002", "Bread", "0")
+            Product("P002", "Bread", "0", 10)
 
 
     #The shop should refuse to give an item a price below zero.
