@@ -4,7 +4,7 @@ class Inventory:
    
     def __init__(self,low_stock_limit=5):
         self.products = {}
-        self.low_stock_limit = pc.Product._validate_quantity(low_stock_limit) 
+        self.low_stock_limit = pc.Product.validate_quantity(low_stock_limit) 
 
     def add_product(self,product):
         """ Adds one one product object to the inventory """
