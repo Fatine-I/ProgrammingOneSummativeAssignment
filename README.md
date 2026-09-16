@@ -30,7 +30,7 @@ The **Inventory & Sales Tracking System** is a Python-based application designed
    ```bash
    git clone [https://github.com/oinusah/ProgrammingOneSummativeAssignment.git](https://github.com/oinusah/ProgrammingOneSummativeAssignment.git)
 
-   ## Team Contributions
+## Team Contributions
 * **Allan Ojuka:** Designed and implemented the main user interface (UI) and managed the inventory tracking logic.
 * **Debora Peter Hello:** Developed the finance module, handling revenue tracking, expense calculations, and financial reporting.
 * **Osman Inusah:** Built the sales processing system, including customer transactions, sales logging, and receipt generation.
