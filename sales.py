@@ -26,7 +26,7 @@ class Sales:
         self._sale_counter = self._find_last_sale_id()
 
     def add_item(self, product_id, quantity):
-        quantity = Product.validate_quantity(quantity)
+        quantity = Product._validate_quantity(quantity)
         if quantity <= 0:
             raise ValueError("Quantity must be greater than zero.")
 
